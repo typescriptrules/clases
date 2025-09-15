@@ -1,10 +1,9 @@
-import "dotenv/config"
+import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import { router, initRoutes } from './routes/index.ts'
 
 const PORT = process.env.PORT || 3001
-
 const app = express()
 
 app.use(cors())
@@ -14,5 +13,6 @@ await initRoutes()
 app.use(router)
 
 app.listen(PORT, () => {
-    console.log("Servidor corriendo en 3002")
+    console.log(`Servidor iniciado en el puerto ${PORT}`)
 })
+
