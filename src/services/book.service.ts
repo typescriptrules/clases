@@ -1,39 +1,77 @@
-import { promises as fs } from "fs"
-import type { IBook } from "../interfaces/book.interface.ts"
-import { fileURLToPath } from "url"
-import { dirname, join } from "path"
+import { promises as fs } from 'fs'
+import { type IBook } from '../interfaces/book.interface.ts'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const filePath = join(__dirname, "../models/book.json")
+const filePath = join(__dirname, '../models/books.json')
 
 
-export const getBooks = async (): Promise<IBook[]> => {
-  const data = await fs.readFile(filePath, "utf-8")
-  console.log('filePath', filePath)
-  return JSON.parse(data) as IBook[]
+
+
+
+// services, controllers, routes
+
+
+
+
+
+// get all books
+const getBooksService = async (): Promise<IBook[]> => {
+    const data = await fs.readFile(filePath, 'utf-8')
+    return JSON.parse(data) as IBook[]
 }
 
-export const getBookById = async (id: string): Promise<IBook | null> => {
-  const books = await getBooks()
-  return books.find((book) => book.id === id) || null
+// get book by id
+const getBookByIdService = async (id: string): Promise<IBook | null> => {
+    const books = await getBooksService()
+    const book = books.find((b) => b.id === id)
+    return book || null
 }
 
-export const addBook = async (newBook: IBook): Promise<void> => {
-  const books = await getBooks()
-  books.push(newBook)
-  await fs.writeFile(filePath, JSON.stringify(books, null, 2), "utf-8")
+
+// delete book by id
+const deleteBookByIdService = async (id: string): Promise<IBook | null> => {
+    const books = await getBooksService()
+    const book = books.find((b) => b.id === id)
+    if (!book) {
+        return null
+    }
+    const filteredBooks = books.filter((b) => b.id !== id)
+    await fs.writeFile(filePath, JSON.stringify(filteredBooks, null, 2))
+    return book
 }
 
-export const deleteBook = async (id: string): Promise<boolean> => {
-  const books = await getBooks()
-  const filtered = books.filter((book) => book.id !== id)
 
-  if (filtered.length === books.length) {
-    return false
-  }
-
-  await fs.writeFile(filePath, JSON.stringify(filtered, null, 2), "utf-8")
-  return true
+// create book
+const createBookService = async (newBook: IBook): Promise<IBook> => {
+    const books = await getBooksService()
+    books.push(newBook)
+    await fs.writeFile(filePath, JSON.stringify(books, null, 2))
+    return newBook
 }
+
+
+// update book by id
+const updateBookByIdService = async (id: string, updatedBook: Partial<IBook>): Promise<IBook | null> => {
+    const books = await getBooksService()
+    const bookIndex = books.findIndex((b) => b.id === id)
+    if(bookIndex === -1) {
+        return null;
+    } else {
+        const book = books[bookIndex];
+        const updated: IBook = {
+            id: book.id,
+            author: updatedBook.author ?? book.author,
+            name: updatedBook.name ?? book.name,
+            owner: updatedBook.owner ?? book.owner
+        };
+        books[bookIndex] = updated;
+        await fs.writeFile(filePath, JSON.stringify(books, null, 2));
+        return updated;
+    }
+}
+
+export { getBooksService, getBookByIdService, deleteBookByIdService, createBookService, updateBookByIdService }
