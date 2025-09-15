@@ -1,51 +1,96 @@
-import { type Request, type Response } from 'express';
-import { handleHttp } from '../utils/error.handler.ts'
-import { type HttpErrorStatus } from '../types/types.ts'
-import { getBooks as getBooksService } from '../services/book.service.ts';
+import { type Request, type Response } from "express";
+import { handleHttp } from "../utils/error.handler.ts";
+import { type HttpErrorStatus } from "../types/types.ts";
+import {
+    getBooks as getBooksService,
+    getBook as getBookService,
+    createBook as createBookService,
+    updateBook as updateBookService,
+    deleteBook as deleteBookService,
+} from "../services/book.service.ts";
 
-const getBook = (req: Request, res: Response) => {  
-    const statusCode: HttpErrorStatus = 500
+const getBooks = async (req: Request, res: Response) => {
     try {
-        
-    }catch(err){
-        handleHttp(res, "Something crashed your app", statusCode, err)
+        const response = await getBooksService();
+        res.send(response);
+    } catch (err) {
+        handleHttp(res, "Error getting books", 500, err);
     }
-}
+};
 
-const getBooks = (req: Request, res: Response) => {  
+const getBook = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return handleHttp(res, "Id is required", 400);
+    }
+
     try {
-        console.log("Entra", req)
-        getBooksService().then((response)=>{
-            console.log(response)
-            res.send(response)
-        })
-    }catch(err){
-        
+        const response = await getBookService(id);
+        if (!response) {
+            return handleHttp(res, "Book not found", 404);
+        }
+        res.send(response);
+    } catch (err) {
+        handleHttp(res, "Error getting book", 500, err);
     }
-}
+};
 
-const deleteBooks = (req: Request, res: Response) => {  
+const deleteBooks = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return handleHttp(res, "Id is required", 400);
+    }
+
     try {
+        const response = await deleteBookService(id);
+        if (!response) {
+            return handleHttp(res, "Book not found", 404);
+        }
 
-    }catch(err){
-        
+        res.send({ message: "Book deleted", response });
+    } catch (err) {
+        handleHttp(res, "Error deleting book", 500, err);
     }
-}
+};
 
-const createBook = (req: Request, res: Response) => {  
+const createBook = async (req: Request, res: Response) => {
     try {
-
-    }catch(err){
-        
+        const body = req.body;
+        const response = await createBookService(body);
+        res.status(201).send(response);
+    } catch (err) {
+        handleHttp(res, "Error creating book", 500, err);
     }
-}
+};
 
-const updateBooks = (req: Request, res: Response) => {  
+const updateBook = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const body = req.body;
+
+    if (!id) {
+        return handleHttp(res, "Id is required", 400);
+    }
+
+    if (!body || Object.keys(body).length === 0) {
+        return handleHttp(res, "No data provided to update", 400);
+    }
+
     try {
+        const response = await updateBookService(id, body);
 
-    }catch(err){
-        
+        if (!response) {
+            return handleHttp(res, "Book not found", 404);
+        }
+
+        res.status(200).send({
+            message: "Book successfully updated",
+            updatedBook: response,
+        });
+    } catch (err) {
+        handleHttp(res, "Error updating book", 500, err);
     }
-}
+};
 
-export { getBook, getBooks, deleteBooks, createBook, updateBooks}
+export { getBook, getBooks, deleteBooks, createBook, updateBook };
