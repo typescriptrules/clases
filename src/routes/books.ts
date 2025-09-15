@@ -1,16 +1,17 @@
 import { Router, type Request, type Response } from 'express'
-import { createBook, getBook, getBooks } from '../controllers/books.ts'
+import { createBook, getBook, getBooks,updateBook, deleteBooks } from '../controllers/books.ts'
 
 const router:Router = Router()
 /**
  * http://localhost:3002/books
  */
 
-router.get("/", (req:Request, res:Response)=> {
-    console.log("vamos ok")
-    getBooks(req, res)
-})
+router.get("/", getBooks);
 router.get('/:id', getBook)
 router.post('/', createBook)
+router.patch('/:id', updateBook)
+router.delete('/:id', deleteBooks)
+
+
 
 export { router }
