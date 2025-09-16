@@ -1,15 +1,12 @@
-import { Router, type Request, type Response } from 'express'
-import { createBook, getBook, getBooks } from '../controllers/books.ts'
+import { Router, type Request, type Response} from "express"
+import { deleteBooksID, getBooks, getBooksID, postBooks, putBooksID } from "../controllers/books.ts";
 
-const router:Router = Router()
-/**
- * http://localhost:3002/books
- */
+const router:Router = Router();
 
-router.get("/", (req:Request, res:Response)=> {
-    getBooks(req, res)
-})
-router.get('/:id', getBook)
-router.post('/', createBook)
+router.get("/", getBooks);
+router.get("/:id", getBooksID);
+router.post("/", postBooks);
+router.put("/:id", putBooksID);
+router.delete("/:id", deleteBooksID);
 
-export { router }
+export {router}

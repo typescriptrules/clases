@@ -1,14 +1,5 @@
-  import { type Response } from 'express'
-  import { type HttpErrorStatus } from '../types/types.ts'
-
-  /**
-   * Maneja los errores y responde con un formato estándar.
-   *
-   * @param res Express response
-   * @param error Mensaje de error
-   * @param code Código HTTP (por defecto 500)
-   * @param details Información adicional opcional (debug, validaciones, etc.)
-   */
+import { type Response } from "express";
+import { type HttpErrorStatus } from "../types/types.ts";
 
   const handleHttp = (
     res: Response,
@@ -23,5 +14,4 @@
     })
     res.send({ error })
   }
-
-  export { handleHttp }
+export {handleHttp}

@@ -1,27 +1,53 @@
-import { promises as fs } from "fs";
-import path from "path";
-import type { IUser } from "../interfaces/book.interface.ts";
+import {promises as fs } from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+import type { IUsers } from "../interfaces/users.interface.ts";
 
-const FILE_PATH = path.join(__dirname, "users.json");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-async function ensureFile() {
-  try {
-    await fs.access(FILE_PATH);
-  } catch {
-    await fs.writeFile(FILE_PATH, "[]", "utf-8");
-  }
+const filePath = join(__dirname, "../models/    users-large.jsonl");
+
+const getUsersService = async (): Promise<IUsers[]> => {
+    const data = await fs.readFile(filePath, "utf-8")
+    return JSON.parse(data) as IUsers[]
 }
 
-export async function getAllUsers(): Promise<IUser[]> {
-  await ensureFile();
-  const data = await fs.readFile(FILE_PATH, "utf-8");
-  return JSON.parse(data);
+const getUsersIDservice = async (id:number): Promise<IUsers | null> => {
+    const  users = await getUsersService();
+    const user = users.find(b => b.id === id)
+    return user || null;
 }
 
-export async function addUser(user: IUser): Promise<IUser> {
-  await ensureFile();
-  const users = await getAllUsers();
-  users.push(user);
-  await fs.writeFile(FILE_PATH, JSON.stringify(users, null, 2), "utf-8");
-  return user;
+const postUsersService = async (newUser:IUsers): Promise<IUsers> => {
+    const  users = await getUsersService();
+    users.push(newUser)
+    await fs.writeFile(filePath, JSON.stringify(users, null, 4), "utf-8")
+    return newUser;
+
 }
+
+const putUsersService = async (id:number, updateData: Partial<IUsers>): Promise<IUsers | null> => {
+    const  users = await getUsersService();
+    const index = users.findIndex(b => b.id === id)
+    if (index === -1) {
+        return null
+    }
+    users[index] = {...users[index]!, ...updateData, id};
+    await fs.writeFile(filePath, JSON.stringify(users,null,4), "utf-8")
+    return users[index];
+    
+}
+
+const deleteUsersService = async (id:number): Promise<boolean> => {
+    const users = await getUsersService();
+    const index = users.findIndex(b => b.id === id)
+    if (index === -1) {
+        return false
+    }
+    const [deletedBook] = users.splice(index,1);
+    await fs.writeFile(filePath, JSON.stringify(users,null,4), "utf-8")
+    return true
+}
+
+export {getUsersService, getUsersIDservice, postUsersService, putUsersService, deleteUsersService}
