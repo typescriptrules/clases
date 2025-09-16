@@ -17,3 +17,6 @@ app.listen(port, () => {
     console.log(`Server started on port http://localhost:${port}!`);
 })
 
+//use cors for unique origin
+//change book to person
+//add any kin of middleware
