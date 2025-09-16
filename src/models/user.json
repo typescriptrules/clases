@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "name": "Gabriel García Márquez",
+    "email": "gabriel@gmail.com",
+    "age": "26"
+  },
+  {
+    "id": "2",
+    "name": "Maria Auxiliadora",
+    "email": "maria@gmail.com",
+    "age": "27"
+  },
+  {
+    "id": "3",
+    "name": "Mateo García Márquez",
+    "email": "mateo@gmail.com",
+    "age": "28"
+  },
+  {
+    "id": "1758037144476",
+    "name": "Juan Pérez",
+    "email": "juan.perez@email.com",
+    "age": "456"
+  }
+]

@@ -35,8 +35,8 @@ const getBooks = (req: Request, res: Response) => {
 
 const createBook = (req: Request, res: Response) => {  
     try {
-        const { author, name, ouwner } = req.body;
-        if (!author || !name || !ouwner) {
+        const { author, name, owner } = req.body;
+        if (!author || !name || !owner) {
             return handleHttp(res, 'Missing required fields', 400);
         }
         
@@ -44,7 +44,7 @@ const createBook = (req: Request, res: Response) => {
             id: Date.now().toString(),
             author,
             name,
-            ouwner
+            owner
         };
         
         addBook(newBook).then(() => {
@@ -62,7 +62,7 @@ const updateBooks = (req: Request, res: Response) => {
             return handleHttp(res, 'Book ID is required', 400);
         }
         
-        const { author, name, ouwner } = req.body;
+        const { author, name, owner } = req.body;
         
         getBookById(id).then(book => {
             if (!book) {
@@ -73,7 +73,7 @@ const updateBooks = (req: Request, res: Response) => {
                 ...book,
                 author: author || book.author,
                 name: name || book.name,
-                ouwner: ouwner || book.ouwner
+                owner: owner || book.owner
             };
             
             deleteBook(id).then(() => {
@@ -104,6 +104,7 @@ const deleteBooks = (req: Request, res: Response) => {
             handleHttp(res, 'Error deleting book', 500, err);
         });
 }
+
 
 
 
