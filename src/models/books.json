@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "author": "Gabriel García Márquez",
+    "name": "Cien años de soledad",
+    "owner": "Ana"
+  },
+  {
+    "id": "2",
+    "author": "Isabel Allende",
+    "name": "La casa de los espíritus",
+    "owner": "Carlos"
+  },
+  {
+    "id": "3",
+    "author": "Jorge Luis Borges",
+    "name": "Ficciones",
+    "owner": "Sofía"
+  },
+  {
+    "id": "4",
+    "author": "Robert C. Martin",
+    "name": "Clean Code updated",
+    "owner": "Kale"
+  }
+]
