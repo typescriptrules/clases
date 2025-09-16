@@ -15,6 +15,7 @@ const USERS_FILE = path.join(__dirname, '../models/users-large.jsonl')
  * Controlador básico - SIN streams (para comparar)
  * Carga TODO el archivo en memoria de una vez
  */
+// Este controlador NO usa ningún servicio, todo el procesamiento está aquí mismo
 export const getUsersWithoutStreams = async (req: Request, res: Response) => {
     try {
         console.log('📦 Cargando TODOS los usuarios en memoria...')
@@ -46,13 +47,15 @@ export const getUsersWithStreams = (req: Request, res: Response) => {
     
     const users: any[] = []
     let processedLines = 0
+    let leftover = ''
     
     // Stream de transformación personalizado
     const jsonTransform = new Transform({
         objectMode: true,
         transform(chunk: Buffer, encoding, callback) {
-            const lines = chunk.toString().split('\n')
-            console.log("chunk")
+            const data = leftover + chunk.toString()
+            const lines = data.split('\n')
+            leftover = lines.pop() || ''
             for (const line of lines) {
                 if (line.trim()) {
                     try {
@@ -60,9 +63,7 @@ export const getUsersWithStreams = (req: Request, res: Response) => {
                         processedLines++
                         
                         // Solo guardamos los primeros 10 para la respuesta
-                        if (users.length < 10) {
-                            users.push(user)
-                        }
+                        if (users.length < 10) users.push(user)
                         
                         // Log cada 1000 usuarios procesados
                         if (processedLines % 1000 === 0) {
@@ -74,14 +75,26 @@ export const getUsersWithStreams = (req: Request, res: Response) => {
                 }
             }
             callback()
+        },
+        flush(callback) {
+            if (leftover.trim()) {
+                try {
+                    const user = JSON.parse(leftover)
+                    processedLines++
+                    if (users.length < 10) users.push(user)
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+            callback()
         }
     })
     
     const readStream = fs.createReadStream(USERS_FILE, { encoding: 'utf8' })
     
     readStream.pipe(jsonTransform)
-    
-    jsonTransform.on('end', () => {
+
+    jsonTransform.on('finish', () => {
         console.log(`✅ Stream completado. Total procesados: ${processedLines}`)
         console.log(`📊 Memoria usada: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`)
         
@@ -94,7 +107,7 @@ export const getUsersWithStreams = (req: Request, res: Response) => {
     })
     
     jsonTransform.on('error', (error) => {
-        console.error('❌ Error en stream:', error)
+        console.error('Error en stream:', error)
         res.status(500).json({ error: 'Error processing users stream' })
     })
 }
