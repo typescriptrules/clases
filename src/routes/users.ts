@@ -1,5 +1,6 @@
 import { Router, type Request, type Response } from 'express'
 import { getUsers, getUser, createUser, updateUsers, deleteUsers} from '../controllers/users.ts'
+import { validateUserData } from '../middleware/validateUser.ts'    
 //, getUser, createUser, updateUsers, deleteUsers
 const router:Router = Router()
 /**
@@ -12,7 +13,7 @@ router.get("/", (req:Request, res:Response)=> {
 })
 
 router.get('/:id', getUser)
-router.post('/', createUser)
+router.post('/', validateUserData, createUser)
 router.put('/:id', updateUsers)
 router.delete('/:id', deleteUsers)
 
