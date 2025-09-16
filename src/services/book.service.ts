@@ -2,6 +2,7 @@ import { promises as fs } from "fs"
 import type { IBook } from "../interfaces/book.interface.ts"
 import { fileURLToPath } from "url"
 import { dirname, join } from "path"
+import type { promises } from "dns"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -37,3 +38,23 @@ export const deleteBook = async (id: string): Promise<boolean> => {
   await fs.writeFile(filePath, JSON.stringify(filtered, null, 2), "utf-8")
   return true
 }
+
+export const updateBook = async (
+  id: string,
+  updatedData: Partial<IBook>
+): Promise<IBook | null> => {
+  const books = await getBooks()
+  const index = books.findIndex((book) => book.id === id)
+
+  if (index === -1) {
+    return null
+  }
+
+  // No dejamos que se actualice el id
+  books[index] = { ...books[index], ...updatedData, id }
+
+  await fs.writeFile(filePath, JSON.stringify(books, null, 2), "utf-8")
+
+  return books[index]
+}
+

@@ -3,4 +3,4 @@ export interface IBook {
     author: string,
     name: string,
     ouwner: string
-}
+} 
