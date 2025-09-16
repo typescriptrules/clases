@@ -26,8 +26,13 @@ export const getUserById = (req: Request, res: Response): void => {
     try {
         const {id} = req.params;
         getUserByIdService(id).then((user) => {
-            if (!user) return res.status(404).send({message: "User not found"});
-            res.send(user);
+            if (!user) {
+                return res.status(404).send({message: "User not found"});
+            }
+            res.json({
+                data: user,
+                color: res.locals.randomColor,
+            });
         });
     } catch (e) {
         handleHttp(res, "Something crashed your app: ", statusCode, e);
