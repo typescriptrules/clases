@@ -6,3 +6,4 @@ export type HttpErrorStatus =
   | 409 // Conflict
   | 500 // Internal Server Error
   | 503 // Service Unavailable
+  | 200 // ok
