@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "author": "Gabriel García Márquez",
+    "name": "Cien años de soledad",
+    "ouwner": "Ana"
+  },
+  {
+    "id": "2",
+    "author": "Isabel Allende",
+    "name": "La casa de los espíritus",
+    "ouwner": "Carlos"
+  },
+  {
+    "id": "3",
+    "author": "Jorge Luis Borges",
+    "name": "Ficciones",
+    "ouwner": "Sofía"
+  },
+  {
+    "id": "4",
+    "author": "Mariana Carmona Zapata",
+    "name": "Alo",
+    "ouwner": "Juan Velez"
+  }
+]
