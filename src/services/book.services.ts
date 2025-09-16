@@ -24,6 +24,7 @@ const getBooksService = async ():Promise<IBook[]> => {
 const createBookService = async (book:IBook):Promise<IBook> => {
     const data = await fs.readFile(filePath, 'utf-8');
     const books:IBook[] = JSON.parse(data) as IBook[];
+    // INSERT INTO BOOKS VALUES (...)
     books.push(book);
     await fs.writeFile(filePath, JSON.stringify(books, null, 2), 'utf-8');
     return book;
@@ -32,6 +33,7 @@ const createBookService = async (book:IBook):Promise<IBook> => {
 const deleteBookService = async (id:string):Promise<void> => {
     const data = await fs.readFile(filePath, 'utf-8');
     const books:IBook[] = JSON.parse(data) as IBook[];
+    // DELETE FROM BOOKS WHERE ID = id
     const newBooks = books.filter(book => book.id !== id);
     await fs.writeFile(filePath, JSON.stringify(newBooks, null, 2), 'utf-8');
 }
@@ -39,7 +41,8 @@ const deleteBookService = async (id:string):Promise<void> => {
 const updateBookService = async (id:string, book:IBook):Promise<IBook|null> => {
     const data = await fs.readFile(filePath, 'utf-8');
     const books:IBook[] = JSON.parse(data) as IBook[];
-    const index = books.findIndex(b => b.id === id);
+    // UPDATE BOOKS SET ... WHERE ID = id
+    const index = books.findIndex(book => book.id === id);
     if(index === -1) return null;
     books[index] = book;
     await fs.writeFile(filePath, JSON.stringify(books, null, 2), 'utf-8');
