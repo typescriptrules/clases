@@ -1,4 +1,5 @@
 import { Router, type Request, type Response } from "express";
+import express from 'express';
 import { getUser, getUsers, createUser, deleteUser, updateUser } from "../controllers/users.ts";
 import { validateUserData, validateUniqueUserId} from '../middlewares/validators.ts';
 
