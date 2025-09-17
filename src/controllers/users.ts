@@ -11,6 +11,90 @@ const pipelineAsync = promisify(pipeline)
 
 const USERS_FILE = path.join(__dirname, '../models/users-large.jsonl')
 
+import {
+    getAllUsers,
+    getUserByName,
+    addUser,
+    updateUserByName,
+    deleteUserByName,
+} from '../services/users.service.ts'
+
+
+export const getUsers = async (req: Request, res: Response) => {
+    try {
+        const users = await getAllUsers()
+        res.json(users)
+    } catch (error) {
+        res.status(500).json({ error: 'Error getting users' })
+    }
+}
+
+export const getUser = async (req: Request, res: Response) => {
+    try {
+        const { name } = req.params
+        if (!name) {
+            return res.status(400).json({ error: 'Name param is required' })
+        }
+
+        const user = await getUserByName(name)
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' })
+        }
+        res.json(user)
+    } catch (error) {
+        res.status(500).json({ error: 'Error getting user' })
+    }
+}
+
+export const createUser = async (req: Request, res: Response) => {
+    try {
+        const { name, role } = req.body
+
+        if (!name || !role) {
+            return res.status(400).json({ error: 'Name and role are required' })
+        }
+
+        const newUser = await addUser({ name, role })
+        res.status(201).json(newUser)
+    } catch (error) {
+        res.status(500).json({ error: 'Error creating user' })
+    }
+}
+
+export const updateUser = async (req: Request, res: Response) => {
+    try {
+        const { name } = req.body
+        if (!name) {
+            return res.status(400).json({ error: 'Name is required to update' })
+        }
+
+        const updated = await updateUserByName(name, req.body)
+        if (!updated) {
+            return res.status(404).json({ error: 'User not found' })
+        }
+        res.json(updated)
+    } catch (error) {
+        res.status(500).json({ error: 'Error updating user' })
+    }
+}
+
+export const deleteUser = async (req: Request, res: Response) => {
+    try {
+        const { name } = req.params
+        if (!name) {
+            return res.status(400).json({ error: 'Name param is required' })
+        }
+
+        const deleted = await deleteUserByName(name)
+        if (!deleted) {
+            return res.status(404).json({ error: 'User not found' })
+        }
+        res.json({ message: 'User deleted' })
+    } catch (error) {
+        res.status(500).json({ error: 'Error deleting user' })
+    }
+}
+
 /**
  * Controlador básico - SIN streams (para comparar)
  * Carga TODO el archivo en memoria de una vez
