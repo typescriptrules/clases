@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -9,91 +9,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const pipelineAsync = promisify(pipeline)
 
-const USERS_FILE = path.join(__dirname, '../models/users-large.jsonl')
-
-import {
-    getAllUsers,
-    getUserByName,
-    addUser,
-    updateUserByName,
-    deleteUserByName,
-} from '../services/users.service.ts'
-
-
-export const getUsers = async (req: Request, res: Response) => {
-    try {
-        const users = await getAllUsers()
-        res.json(users)
-    } catch (error) {
-        res.status(500).json({ error: 'Error getting users' })
-    }
-}
-
-export const getUser = async (req: Request, res: Response) => {
-    try {
-        const { name } = req.params
-        if (!name) {
-            return res.status(400).json({ error: 'Name param is required' })
-        }
-
-        const user = await getUserByName(name)
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' })
-        }
-        res.json(user)
-    } catch (error) {
-        res.status(500).json({ error: 'Error getting user' })
-    }
-}
-
-export const createUser = async (req: Request, res: Response) => {
-    try {
-        const { name, role } = req.body
-
-        if (!name || !role) {
-            return res.status(400).json({ error: 'Name and role are required' })
-        }
-
-        const newUser = await addUser({ name, role })
-        res.status(201).json(newUser)
-    } catch (error) {
-        res.status(500).json({ error: 'Error creating user' })
-    }
-}
-
-export const updateUser = async (req: Request, res: Response) => {
-    try {
-        const { name } = req.body
-        if (!name) {
-            return res.status(400).json({ error: 'Name is required to update' })
-        }
-
-        const updated = await updateUserByName(name, req.body)
-        if (!updated) {
-            return res.status(404).json({ error: 'User not found' })
-        }
-        res.json(updated)
-    } catch (error) {
-        res.status(500).json({ error: 'Error updating user' })
-    }
-}
-
-export const deleteUser = async (req: Request, res: Response) => {
-    try {
-        const { name } = req.params
-        if (!name) {
-            return res.status(400).json({ error: 'Name param is required' })
-        }
-
-        const deleted = await deleteUserByName(name)
-        if (!deleted) {
-            return res.status(404).json({ error: 'User not found' })
-        }
-        res.json({ message: 'User deleted' })
-    } catch (error) {
-        res.status(500).json({ error: 'Error deleting user' })
-    }
-}
+const USERS_FILE = path.join(__dirname, '../models/users-large.json')
 
 /**
  * Controlador básico - SIN streams (para comparar)
@@ -102,14 +18,15 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const getUsersWithoutStreams = async (req: Request, res: Response) => {
     try {
         console.log('📦 Cargando TODOS los usuarios en memoria...')
-        
+
         const data = fs.readFileSync(USERS_FILE, 'utf8')
-        const lines = data.split('\n').filter(line => line.trim())
-        const users = lines.map(line => JSON.parse(line))
-        
+
+        // El archivo ahora es un array JSON válido, no NDJSON
+        const users = JSON.parse(data)
+
         console.log(`💾 Cargados ${users.length} usuarios en memoria`)
         console.log(`📊 Memoria usada: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`)
-        
+
         res.json({
             method: 'without-streams',
             totalUsers: users.length,
@@ -117,7 +34,8 @@ export const getUsersWithoutStreams = async (req: Request, res: Response) => {
             users: users.slice(0, 10) // Solo mostramos los primeros 10
         })
     } catch (error) {
-        res.status(500).json({ error: 'Error reading users file' })
+        console.error('Error:', error)
+        res.status(500).json({ error: 'Error reading users file', details: error.message })
     }
 }
 
@@ -127,10 +45,10 @@ export const getUsersWithoutStreams = async (req: Request, res: Response) => {
  */
 export const getUsersWithStreams = (req: Request, res: Response) => {
     console.log('🌊 Procesando usuarios con STREAMS...')
-    
+
     const users: any[] = []
     let processedLines = 0
-    
+
     // Stream de transformación personalizado
     const jsonTransform = new Transform({
         objectMode: true,
@@ -142,12 +60,12 @@ export const getUsersWithStreams = (req: Request, res: Response) => {
                     try {
                         const user = JSON.parse(line)
                         processedLines++
-                        
+
                         // Solo guardamos los primeros 10 para la respuesta
                         if (users.length < 10) {
                             users.push(user)
                         }
-                        
+
                         // Log cada 1000 usuarios procesados
                         if (processedLines % 1000 === 0) {
                             console.log(`📈 Procesados: ${processedLines} usuarios`)
@@ -160,15 +78,15 @@ export const getUsersWithStreams = (req: Request, res: Response) => {
             callback()
         }
     })
-    
+
     const readStream = fs.createReadStream(USERS_FILE, { encoding: 'utf8' })
-    
+
     readStream.pipe(jsonTransform)
-    
+
     jsonTransform.on('end', () => {
         console.log(`✅ Stream completado. Total procesados: ${processedLines}`)
         console.log(`📊 Memoria usada: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`)
-        
+
         res.json({
             method: 'with-streams',
             totalProcessed: processedLines,
@@ -176,7 +94,7 @@ export const getUsersWithStreams = (req: Request, res: Response) => {
             users: users
         })
     })
-    
+
     jsonTransform.on('error', (error) => {
         console.error('❌ Error en stream:', error)
         res.status(500).json({ error: 'Error processing users stream' })
@@ -189,30 +107,30 @@ export const getUsersWithStreams = (req: Request, res: Response) => {
  */
 export const streamUsersToClient = (req: Request, res: Response) => {
     console.log('📡 Streaming usuarios al cliente...')
-    
+
     // Headers para Server-Sent Events
     res.writeHead(200, {
         'Content-Type': 'text/plain',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
     })
-    
+
     let processedLines = 0
-    
+
     const jsonTransform = new Transform({
         objectMode: true,
         transform(chunk: Buffer, encoding, callback) {
             const lines = chunk.toString().split('\n')
-            
+
             for (const line of lines) {
                 if (line.trim()) {
                     try {
                         const user = JSON.parse(line)
                         processedLines++
-                        
+
                         // Enviar cada usuario inmediatamente al cliente
                         res.write(`Usuario ${processedLines}: ${user.name} (${user.role})\n`)
-                        
+
                         // Simular procesamiento lento
                         if (processedLines % 100 === 0) {
                             res.write(`--- Procesados ${processedLines} usuarios ---\n`)
@@ -225,21 +143,21 @@ export const streamUsersToClient = (req: Request, res: Response) => {
             callback()
         }
     })
-    
+
     const readStream = fs.createReadStream(USERS_FILE, { encoding: 'utf8' })
-    
+
     readStream.pipe(jsonTransform)
-    
+
     jsonTransform.on('end', () => {
         res.write(`\n✅ Completado! Total: ${processedLines} usuarios procesados\n`)
         res.end()
     })
-    
+
     jsonTransform.on('error', (error) => {
         res.write(`\n❌ Error: ${error.message}\n`)
         res.end()
     })
-    
+
     // Manejar desconexión del cliente
     req.on('close', () => {
         console.log('🔌 Cliente desconectado')
@@ -253,23 +171,23 @@ export const streamUsersToClient = (req: Request, res: Response) => {
  */
 export const uploadUsersStream = async (req: Request, res: Response) => {
     console.log('📤 Procesando archivo subido con streams...')
-    
+
     let processedUsers = 0
     let validUsers = 0
     let errors = 0
-    
+
     // Transform stream para procesar cada línea
     const processTransform = new Transform({
         objectMode: true,
         transform(chunk: Buffer, encoding, callback) {
             const lines = chunk.toString().split('\n')
-            
+
             for (const line of lines) {
                 if (line.trim()) {
                     processedUsers++
                     try {
                         const user = JSON.parse(line)
-                        
+
                         // Validar estructura del usuario
                         if (user.name && user.role && typeof user.name === 'string') {
                             validUsers++
@@ -286,14 +204,14 @@ export const uploadUsersStream = async (req: Request, res: Response) => {
             callback()
         }
     })
-    
+
     try {
         // Procesar el stream del request body
         await pipelineAsync(
             req,
             processTransform
         )
-        
+
         res.json({
             message: 'Archivo procesado con streams',
             stats: {
@@ -303,7 +221,7 @@ export const uploadUsersStream = async (req: Request, res: Response) => {
                 memoryUsed: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`
             }
         })
-        
+
     } catch (error) {
         res.status(500).json({ error: 'Error processing uploaded file' })
     }
