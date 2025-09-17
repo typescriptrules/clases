@@ -12,12 +12,19 @@ export function validateUserData(req: Request, res: Response, next: NextFunction
     });
   }
 
-  const { name, role } = req.body;
+  const { name, role, email, age } = req.body;
   
-  if (typeof name !== "string" || typeof role !== "string") {
+  if (typeof name !== "string" || typeof role !== "string" || typeof email !== "string" || typeof age !== "string") {
     return res.status(400).json({
-      error: "Invalid data: 'name' and 'role' must be strings",
-      received: { name: typeof name, role: typeof role }
+      error: "Invalid data: 'name', 'role', 'email' and 'age' must be strings",
+      received: { name: typeof name, role: typeof role, email: typeof email, age: typeof age }
+    });
+  }
+
+  if (name == null || email == null || age == null) {
+    return res.status(400).json({
+      error: "Missing required fields: 'name', 'email' and 'age' are required",
+      received: { name:typeof name, email:typeof email, age:typeof age },
     });
   }
   
@@ -36,3 +43,4 @@ export function checkPermissions(req: Request, res: Response, next: NextFunction
 
   next();
 }
+
