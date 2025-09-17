@@ -1,3 +1,5 @@
+
+
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -5,7 +7,7 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const USERS_FILE = path.join(__dirname, '../src/models/users-large.jsonl')
+const USERS_FILE = path.join(__dirname, '../src/models/users-large.json')
 
 const roles = ['admin', 'user', 'moderator', 'guest']
 const names = [

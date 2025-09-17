@@ -5,7 +5,3 @@ export interface IBook {
     ouwner: string
 }
 
-export interface IUser {
-  name: string;
-  role: string;
-}

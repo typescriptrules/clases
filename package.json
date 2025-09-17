@@ -2,10 +2,11 @@
   "name": "clases",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn --transpileOnly ./index.ts",
+    "dev": "ts-node-dev --respawn --transpileOnly ./src/app.ts",
+    "start": "node --loader ts-node/esm ./src/app.ts",
     "listen": "nodemon ./src/app.ts"
   },
   "keywords": [],

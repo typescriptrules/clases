@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const pipelineAsync = promisify(pipeline)
 
-const USERS_FILE = path.join(__dirname, '../models/users-large.jsonl')
+const USERS_FILE = path.join(__dirname, '../models/users-large.json')
 
 /**
  * Controlador básico - SIN streams (para comparar)
@@ -20,8 +20,9 @@ export const getUsersWithoutStreams = async (req: Request, res: Response) => {
         console.log('📦 Cargando TODOS los usuarios en memoria...')
         
         const data = fs.readFileSync(USERS_FILE, 'utf8')
-        const lines = data.split('\n').filter(line => line.trim())
-        const users = lines.map(line => JSON.parse(line))
+        
+        // El archivo ahora es un array JSON válido, no NDJSON
+        const users = JSON.parse(data)
         
         console.log(`💾 Cargados ${users.length} usuarios en memoria`)
         console.log(`📊 Memoria usada: ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`)
@@ -33,7 +34,8 @@ export const getUsersWithoutStreams = async (req: Request, res: Response) => {
             users: users.slice(0, 10) // Solo mostramos los primeros 10
         })
     } catch (error) {
-        res.status(500).json({ error: 'Error reading users file' })
+        console.error('Error:', error)
+        res.status(500).json({ error: 'Error reading users file', details: error.message })
     }
 }
 
