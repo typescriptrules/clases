@@ -11,6 +11,7 @@ const filePath = join(__dirname, "../models/book.json")
 
 export const getBooks = async (): Promise<IBook[]> => {
   const data = await fs.readFile(filePath, "utf-8")
+  console.log('filePath', filePath)
   return JSON.parse(data) as IBook[]
 }
 
@@ -36,3 +37,20 @@ export const deleteBook = async (id: string): Promise<boolean> => {
   await fs.writeFile(filePath, JSON.stringify(filtered, null, 2), "utf-8")
   return true
 }
+
+export const updateBookService = async (id: string, updateData: Partial<IBook>): Promise<IBook | null> => {
+    const data = await fs.readFile(filePath, 'utf-8');
+    const books: IBook[] = JSON.parse(data);
+    const index = books.findIndex((b) => b.id === id);
+
+    if (index === -1) {
+        return null;
+    }
+
+    const updatedBook = { ...books[index]!,  ...updateData };
+    books[index] = updatedBook;
+
+    await fs.writeFile(filePath, JSON.stringify(books, null, 2), 'utf-8');
+
+    return updatedBook;
+};

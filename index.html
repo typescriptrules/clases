@@ -10,12 +10,19 @@
   <label for="url">URL del backend:</label>
   <input id="url" type="text" size="50" value="http://localhost:3003/books" />
   <button id="fetchBtn">Hacer petición</button>
+  
+  <br><br>
+  <label for="bookId">Buscar libro por ID:</label>
+  <input id="bookId" type="text" placeholder="Ej: 1, 2, 3..." />
+  <button id="searchBtn">Buscar por ID</button>
 
   <pre id="output"></pre>
 
   <script>
     const button = document.getElementById("fetchBtn");
+    const searchBtn = document.getElementById("searchBtn");
     const urlInput = document.getElementById("url");
+    const bookIdInput = document.getElementById("bookId");
     const output = document.getElementById("output");
 
     button.addEventListener("click", async () => {
@@ -30,6 +37,34 @@
 
         const data = await res.json();
         output.textContent = "✅ Respuesta:\n" + JSON.stringify(data, null, 2);
+      } catch (err) {
+        output.textContent = "❌ Error: " + err;
+      }
+    });
+
+    searchBtn.addEventListener("click", async () => {
+      const bookId = bookIdInput.value;
+      if (!bookId) {
+        output.textContent = "❌ Por favor ingresa un ID";
+        return;
+      }
+
+      const url = `http://localhost:3003/books/${bookId}`;
+      output.textContent = "⏳ Buscando libro...";
+
+      try {
+        const res = await fetch(url, {
+          method: "GET"
+        });
+        
+        if (res.status === 404) {
+          const error = await res.json();
+          output.textContent = "❌ " + error.message;
+          return;
+        }
+
+        const data = await res.json();
+        output.textContent = "✅ Libro encontrado:\n" + JSON.stringify(data, null, 2);
       } catch (err) {
         output.textContent = "❌ Error: " + err;
       }
