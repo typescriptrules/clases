@@ -3,36 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <title>Prueba CORS Frontend</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f6fb;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    h1 {
+      color: #2d3a4b;
+      margin-top: 2rem;
+    }
+    .container {
+      background: #fff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      margin-top: 2rem;
+      min-width: 320px;
+      max-width: 90vw;
+    }
+    label {
+      font-weight: 500;
+      color: #444;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.5rem 0 1rem 0;
+      border: 1px solid #bfc9d1;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:disabled {
+      background: #bfc9d1;
+      cursor: not-allowed;
+    }
+    button:hover:not(:disabled) {
+      background: #1e40af;
+    }
+    pre {
+      background: #f1f5f9;
+      color: #222;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      font-size: 0.97rem;
+      max-height: 350px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
 </head>
 <body>
-  <h1>Frontend para probar CORS 🚀</h1>
-
-  <label for="url">URL del backend:</label>
-  <input id="url" type="text" size="50" value="http://localhost:3003/books" />
-  <button id="fetchBtn">Hacer petición</button>
-
-  <pre id="output"></pre>
-
+  <h1>Frontend para probar CORS </h1>
+  <div class="container">
+    <label for="url">URL del backend:</label>
+    <input id="url" type="text" size="50" value="http://localhost:3000/users" />
+    <button id="fetchBtn">Hacer petición</button>
+    <pre id="output">Introduce la URL y haz clic en "Hacer petición".</pre>
+  </div>
   <script>
     const button = document.getElementById("fetchBtn");
     const urlInput = document.getElementById("url");
     const output = document.getElementById("output");
 
     button.addEventListener("click", async () => {
-      const url = urlInput.value;
+      const url = urlInput.value.trim();
+      if (!url) {
+        output.textContent = "❗ Por favor, introduce una URL válida.";
+        return;
+      }
+      button.disabled = true;
       output.textContent = "⏳ Enviando petición...";
 
       try {
-        const res = await fetch(url, {
-          method: "GET"
-        });
-        console.log(res)
-
-        const data = await res.json();
-        output.textContent = "✅ Respuesta:\n" + JSON.stringify(data, null, 2);
+        const res = await fetch(url, { method: "GET" });
+        let text = await res.text();
+        let data;
+        if (!res.ok) {
+          output.textContent = `❌ Error HTTP ${res.status}: ${res.statusText}\n${text}`;
+        } else {
+          try {
+            data = JSON.parse(text);
+            output.textContent = "✅ Respuesta:\n" + JSON.stringify(data, null, 2);
+          } catch {
+            output.textContent = "✅ Respuesta (texto):\n" + text;
+          }
+        }
       } catch (err) {
-        output.textContent = "❌ Error: " + err;
+        output.textContent = "❌ Error de red o CORS: " + err;
+      } finally {
+        button.disabled = false;
       }
+    });
+
+    urlInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") button.click();
     });
   </script>
 </body>
