@@ -1,7 +1,9 @@
 import 'dotenv/config'
-import express from 'express';
+import express, {type Request, type Response} from 'express';
 import cors from 'cors';
 import {router, initRoutes} from "./routes/index.ts";
+import {logMiddleware} from "./middlewares/log.ts";
+import {scheduleEmailJob} from "./services/email.service.ts";
 
 const port = process.env.PORT || 3001;
 const app = express();
@@ -16,6 +18,12 @@ app.use(express.urlencoded({extended: true}));
 
 await initRoutes();
 app.use(router);
+
+app.get("/api/ping", logMiddleware, (req: Request, res: Response) => {
+    res.json({msg: "pong", from: "API"});
+});
+
+scheduleEmailJob();
 
 app.listen(port, () => {
     console.log(`Server started on port http://localhost:${port}!`);
