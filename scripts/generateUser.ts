@@ -14,7 +14,7 @@ const names = [
     'Patricia', 'Fernando', 'Lucía', 'Ricardo', 'Valeria'
 ]
 
-function generateUser(id: number) {
+function generateUser(id: string) {
     const name = names[Math.floor(Math.random() * names.length)]
     const role = roles[Math.floor(Math.random() * roles.length)]
     const email = `${name.toLowerCase()}${id}@example.com`
