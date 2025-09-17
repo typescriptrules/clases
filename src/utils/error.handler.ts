@@ -16,12 +16,14 @@
     code: HttpErrorStatus = 500,
     details?: unknown
   ) => {
-    res.status(code).json({
-      ok: false,
-      error,
-      ...(details ? { details } : {}), 
-    })
-    res.send({ error })
+    if (!res.headersSent) {
+      res.status(code).json({
+        ok: false,
+        error,
+        ...(details ? { details }: {}),
+      })
+    }
+    return
   }
 
   export { handleHttp }

@@ -1,57 +1,32 @@
-import { Router, type Request, type Response } from 'express'
-import { checkPermissions, validateUserData } from '../middlewares/validateUser.ts'
-import { getUsersWithoutStreams, getUsersWithStreams, streamUsersToClient, uploadUsersStream } from '../controllers/users.ts';
+import { response, Router, type Request, type Response } from 'express'
+import { checkPermissions, validateUserData } from '../middlewares/validateUser.ts';
+import { getUsers, getUserById, deleteUserById, createUser, updateUserById } from '../controllers/users.ts'
 
-const router:Router = Router()
-/**
- * http://localhost:3002/users
- */
+const router: Router = Router();
 
 
-router.post('/', validateUserData,  checkPermissions, (req: Request, res: Response) => {
-    const { name, role } = req.body;
-    res.status(201).json({
-        message: "User did something successfully",
-        user: { name, role },
-    });
-})
+// create user 
+router.post('/', checkPermissions, validateUserData, createUser);
 
+// get all users
+router.get('/', (req: Request, res: Response) => {
+    getUsers(req,res)
+});
 
-// 🐌 Método tradicional - Carga todo en memoria
-router.get('/without-streams', getUsersWithoutStreams)
+// get user by id
+router.get('/:id', (req: Request, res: Response) => {
+    getUserById(req,res)
+});
 
-// 🌊 Método con streams - Procesa línea por línea  
-router.get('/with-streams', getUsersWithStreams)
+// delete user by id 
+router.delete('/:id', (req: Request, res: Response) => {
+    deleteUserById(req,res)
+});
 
-// 📡 Stream directo al cliente - Respuesta en tiempo real
-router.get('/stream-to-client', streamUsersToClient)
+// update user by id
+router.put('/:id', (req: Request, res: Response) => {
+    updateUserById(req,res)
+});
 
-// 📤 Upload procesando con streams
-router.post('/upload-stream', uploadUsersStream)
-
-/**
- * RUTA PARA COMPARAR RENDIMIENTO
- */
-router.get('/performance-test', async (req: Request, res: Response) => {
-    const startTime = Date.now()
-    const initialMemory = process.memoryUsage().heapUsed
-    
-    // Simular procesamiento
-    console.log('🔥 Iniciando test de rendimiento...')
-    
-    res.json({
-        message: 'Test de rendimiento disponible',
-        endpoints: {
-            traditional: '/users/without-streams',
-            streaming: '/users/with-streams',
-            realtime: '/users/stream-to-client'
-        },
-        tips: [
-            'Usa /without-streams para archivos pequeños',
-            'Usa /with-streams para archivos grandes',
-            'Usa /stream-to-client para respuestas en tiempo real'
-        ]
-    })
-})
 
 export { router }

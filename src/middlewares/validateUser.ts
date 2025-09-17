@@ -38,3 +38,4 @@ export function checkPermissions(req: Request, res: Response, next: NextFunction
   // Si tiene permisos, continuar
   next();
 }
+
