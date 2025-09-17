@@ -3,61 +3,52 @@ import { checkPermissions, validateUserData } from '../middlewares/validateUser.
 import { getUsersWithoutStreams, getUsersWithStreams, streamUsersToClient, uploadUsersStream } from '../controllers/users.ts';
 import cors from 'cors';
 
-const router:Router = Router()
+const router: Router = Router()
 
 const corsOptions = {
-    origin: 'http://localhost:3000/users', // Aquí puedes especificar el origen permitido
-    methods: ['GET', 'POST', 'UPDATE', 'DELETE'], // Métodos HTTP permitidos
-    allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
-    optionsSuccessStatus: 200 // Algunos navegadores (como IE11) requieren este valor para respuestas 204
+    origin: [
+        'http://localhost:3000',
+        'http://localhost:5500',
+    ], 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200
 };
-/**
- * http://localhost:3002/users
- */
 
-
-router.post('/', validateUserData,  checkPermissions, cors(corsOptions), (req: Request, res: Response) => {
+// Crear usuario
+router.post('/', cors(corsOptions), validateUserData, checkPermissions, (req: Request, res: Response) => {
     const { name, role } = req.body;
     res.status(201).json({
         message: "User did something successfully",
         user: { name, role },
     });
-})
+});
 
+// Obtener usuarios (sin streams)
+router.get('/',cors(corsOptions),getUsersWithoutStreams);
 
-// 🐌 Método tradicional - Carga todo en memoria
-router.get('/without-streams', getUsersWithoutStreams, cors(corsOptions))
+// Obtener usuarios (con streams)
+router.get('/stream',cors(corsOptions),getUsersWithStreams);
 
-// 🌊 Método con streams - Procesa línea por línea
-router.get('/with-streams', getUsersWithStreams, cors(corsOptions))
+// Stream directo al cliente
+router.get('/stream/live',cors(corsOptions),streamUsersToClient);
 
-// 📡 Stream directo al cliente - Respuesta en tiempo real
-router.get('/stream-to-client', streamUsersToClient, cors(corsOptions))
+// Subir usuarios usando streams
+router.post('/upload',cors(corsOptions),uploadUsersStream);
 
-// 📤 Upload procesando con streams
-router.post('/upload-stream', uploadUsersStream)
-
-/**
- * RUTA PARA COMPARAR RENDIMIENTO
- */
+// Ruta para comparar rendimiento
 router.get('/performance-test', async (req: Request, res: Response) => {
-    const startTime = Date.now()
-    const initialMemory = process.memoryUsage().heapUsed
-    
-    // Simular procesamiento
-    console.log('🔥 Iniciando test de rendimiento...')
-    
     res.json({
         message: 'Test de rendimiento disponible',
         endpoints: {
-            traditional: '/users/without-streams',
-            streaming: '/users/with-streams',
-            realtime: '/users/stream-to-client'
+            traditional: '/users',
+            streaming: '/users/stream',
+            realtime: '/users/stream/live'
         },
         tips: [
-            'Usa /without-streams para archivos pequeños',
-            'Usa /with-streams para archivos grandes',
-            'Usa /stream-to-client para respuestas en tiempo real'
+            'Usa /users para archivos pequeños',
+            'Usa /users/stream para archivos grandes',
+            'Usa /users/stream/live para respuestas en tiempo real'
         ]
     })
 })

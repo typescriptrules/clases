@@ -97,14 +97,18 @@
         const res = await fetch(url, { method: "GET" });
         let text = await res.text();
         let data;
-        try {
-          data = JSON.parse(text);
-          output.textContent = "✅ Respuesta:\n" + JSON.stringify(data, null, 2);
-        } catch {
-          output.textContent = "✅ Respuesta (texto):\n" + text;
+        if (!res.ok) {
+          output.textContent = `❌ Error HTTP ${res.status}: ${res.statusText}\n${text}`;
+        } else {
+          try {
+            data = JSON.parse(text);
+            output.textContent = "✅ Respuesta:\n" + JSON.stringify(data, null, 2);
+          } catch {
+            output.textContent = "✅ Respuesta (texto):\n" + text;
+          }
         }
       } catch (err) {
-        output.textContent = "❌ Error: " + err;
+        output.textContent = "❌ Error de red o CORS: " + err;
       } finally {
         button.disabled = false;
       }
