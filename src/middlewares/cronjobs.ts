@@ -18,7 +18,7 @@ cron.schedule('*/5 * * * *', async () => {
 
 
 // Enviar email con logs el día 1 de cada mes a las 8 AM
-cron.schedule('0 8 1 * *', async () => {
+cron.schedule('*/1 * * * *', async () => {
     await sendMonthlyEmail();
 });
 
