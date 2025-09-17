@@ -1,18 +1,19 @@
 {
   "name": "clases",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "CORS (Cross-Origin Resource Sharing) is a security mechanism implemented by browsers that controls which external origins can communicate with your server. By default, the browser blocks requests coming from a domain other than the one that served the page (what we call \"cross-origin\").",
+  "main": "dist/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpileOnly ./index.ts",
-    "listen" : "nodemon ./src/app.ts"
+    "listen": "nodemon ./src/app.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+
   "type": "module",
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.16.1",
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
@@ -22,10 +23,15 @@
     "ts-node-dev": "^2.0.0"
   },
   "dependencies": {
+    "axios": "^1.12.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "mongoose": "^8.18.1",
-    "multer": "^2.0.2"
+    "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.6",
+    "nodemon": "^3.1.10"
   }
+
 }
