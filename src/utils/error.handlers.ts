@@ -12,7 +12,7 @@ import { type HttpErrorStatus } from "../types/types.ts"
 const handleHttp = (
   res: Response,
   message: string,
-  code: HttpErrorStatus = 500,
+  code: HttpErrorStatus = 500,  
   details?: unknown
 ) => {
   console.error(`[ERROR ${code}] ${message}`, details ?? "")

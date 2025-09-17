@@ -5,7 +5,7 @@ import { initRoutes, router } from './routes/index.ts';
 import { requestLogger } from "./middlewares/validateUser.ts";
 
 const PORT = process.env.PORT || 3001;
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3001";
+const CLIENT_URL = process.env.CLIENT_URL || "http://127.0.0.1:5500";
 const app = express();
 
 app.use(cors({
