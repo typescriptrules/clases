@@ -1,18 +1,19 @@
-import "dotenv/config"
-import express from 'express'
-import cors from 'cors'
-import { router, initRoutes } from './routes/index.ts'
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import { logger } from "./middlewares/logger.js";
+import usersRouter from "./routes/users.js";
 
-const PORT = process.env.PORT || 3001
 
-const app = express()
+const app = express();
 
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
+app.use(logger);
 
-await initRoutes()
-app.use(router)
+app.use("/users", usersRouter);
 
-app.listen(PORT, () => {
-    console.log("Servidor corriendo en 3002")
-})
+app.get("/", (_req, res) => res.send("API users CRUD con middlewares ✅"));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor en http://localhost:${PORT}`));

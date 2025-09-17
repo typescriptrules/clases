@@ -1,62 +1,75 @@
-# First steps to create your first API
+# Users CRUD API  
 
-## Facilities
+API simple en **Node.js + Express + TypeScript** que maneja usuarios almacenados en un archivo JSON. Incluye middlewares de autenticación con **token fijo** y validación de datos.  
 
-#### First you need to install this packages
+---
 
-```bash
-  npm install express cors dotenv multer moongose
-  npm install -D @types/express @types/cors @types/multer ts-node nodemon
+## Requisitos  
+- Node.js ≥ 18  
+- npm  
+
+---
+
+## Instalación  
+1. Clonar el repositorio  
+2. Instalar dependencias:  
+   ```bash
+   npm install
+   ```  
+3. Crear un archivo `.env` en la raíz con:  
+   ```env
+   PORT=3000
+   FIXED_TOKEN=supersecreto123
+   ```  
+4. Iniciar el servidor en modo desarrollo:  
+   ```bash
+   npm run dev
+   ```  
+
+El servidor estará disponible en:  
+👉 `http://localhost:3000`  
+
+---
+
+## Endpoints  
+
+Todos los endpoints bajo `/users` requieren el header:  
+
+```
+Authorization: Bearer supersecreto123
 ```
 
-#### Then you need to add this to your scripts
+| Método  | Endpoint                  | Body (JSON) | Notas |
+|---------|---------------------------|-------------|-------|
+| **GET** | `/users`                  | –           | Lista todos los usuarios |
+| **POST**| `/users`                  | `{ "name": "Sharon", "email": "sharon@mail.com", "role": "admin" }` | Crea un usuario nuevo |
+| **GET** | `/users/:id`              | –           | Obtiene un usuario por ID |
+| **PUT** | `/users/:id`              | `{ "name": "Nuevo Nombre" }` | Actualiza un usuario existente |
+| **DELETE** | `/users/:id`           | –           | Requiere además `x-role: admin` en headers |
 
-```json
-  "scripts": {
-    "listen" : "nodemon ./src/app.ts"
+---
+
+## Ejemplo rápido con Postman  
+
+### Crear usuario  
+- **POST** `http://localhost:3000/users`  
+- Headers:  
+  ```
+  Authorization: Bearer supersecreto123
+  ```  
+- Body (raw JSON):  
+  ```json
+  {
+    "name": "Sharon",
+    "email": "sharon@mail.com",
+    "role": "admin"
   }
-```
+  ```
 
-## Serve your API
-
-#### After those installs you will start your service like this
-
-```ts
-    import "dotenv/config"
-    import express from 'express'
-    import cors from 'cors'
-
-    const PORT = process.env.PORT || 3001
-
-    const app = express()
-    app.use(cors())
-
-    app.listen(PORT, () => console.log(`Listen on port ${PORT}`))
-```
-
-## Create you first Route
-
-#### Before we exposed our API but empty, know we can start defining our routes in our routes folder
-
-```ts
-    import { Router, type Request, type Response } from 'express'
-
-    const router:Router = Router()
-    /**
-     * http://localhost:3002/books
-     */
-
-    router.get('/books', (req:Request, res:Response)=>{
-        res.send({data: 'AQUI_VAN_LOS_MODELOS'})
-    })
-
-    export { router }
-```
-
-#### Afet defining our first route, you have to attach it to the app adding those lines
-
-```ts
-    import { router } from './routes/book.ts'
-    app.use(router)
-```
-
+### Eliminar usuario  
+- **DELETE** `http://localhost:3000/users/1`  
+- Headers:  
+  ```
+  Authorization: Bearer supersecreto123
+  x-role: admin
+  ```
