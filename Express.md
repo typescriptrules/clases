@@ -66,3 +66,15 @@ app.use(router)
 app.listen(PORT, () => { console.log(\Servidor corriendo en ${PORT}`) })
 ```
 - Esto **enciende la luz del salón** y pone al maestro a trabajar en el puerto elegido. Cuando ya está listo, ejecuta la función que imprime en consola:Servidor corriendo en 3001` (o el número que sea). Es la forma de decir: “¡ya estamos listos!”.
+
+## Pequeños tips / notas útiles (explicado simple)
+
+- Si ves un error con await initRoutes(), significa que el proyecto no está configurado para usar await en el nivel superior. Se arregla con la configuración del tsconfig o envolviendo el código en una función async.
+
+- Si importas ./routes/index.ts y prefieres no poner la .ts, puedes usar ./routes si tu configuración lo permite. Ambas formas funcionan dependiendo de la configuración.
+
+- Para correr este archivo en desarrollo usa tu script listen. que ya está en el package.json: npm run listen. Ese script hace que, cuando cambies el archivo, el servidor se reinicie solo — como magia para no tener que cerrar y abrir todo.
+
+### Para is a la siguiente sección.
+
+Click [Aquí]() para ir al próximo archivo
