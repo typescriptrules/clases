@@ -9,7 +9,7 @@ cat > src/app.ts <<'TS'
 ```
 Esto instalará los paquetes necesarios y luego creará la carpeta src y el archivo app.ts
 
-## Explicación simple, línea por línea (como para niños)
+## Explicación simple, línea por línea
 ```ts
 import "dotenv/config"
 ```
