@@ -1,5 +1,7 @@
 # Clases sobre Express con Node
 
+## ¿Qué es el package.json y qué significa?
+
 Imagina que el package.json es la hoja de instrucciones de tu proyecto. Es como el cartel de un salón de clase que dice:
 
 - cómo se llama el salón,
@@ -155,3 +157,152 @@ Resumen:
 - dependencies = materiales principales.
 
 - keywords = etiquetas.
+
+## ¿Qué es el tsconfig y qué significa?
+
+Este archivo es como el manual de reglas que le dice a TypeScript:
+“oye, así quiero que traduzcas mi cuaderno en TypeScript para que lo entienda JavaScript”.
+
+```json
+{
+  "compilerOptions": {
+```
+Aquí abrimos la sección de opciones del compilador.
+El compilador es el traductor que convierte TypeScript → JavaScript.
+
+```json
+  "outDir": "./dist",
+```
+Aquí decimos en qué carpeta queremos guardar el resultado.
+Cuando TypeScript traduzca tu código, lo pondrá en la carpeta dist.
+Es como tener una caja donde guardamos todos los cuadernos ya traducidos.
+
+```json
+  "module": "nodenext",
+```
+Define el sistema de módulos.
+“nodenext” significa que vamos a usar la forma moderna de importar y exportar cosas (import y export) como lo hace Node.
+
+```json
+  "target": "esnext",
+```
+Aquí decimos hasta qué versión de JavaScript queremos que lo traduzca.
+esnext significa: la versión más nueva posible.
+Así aprovechamos lo último que existe en JavaScript.
+
+```json
+  "lib": ["esnext"],
+```
+Le decimos qué bibliotecas queremos que conozca.
+Con ["esnext"] le decimos: “entiende todo lo nuevo de JavaScript moderno”.
+
+```json
+  "types": ["node"],
+```
+Le pedimos que cargue los tipos de Node.js.
+Esto permite que TypeScript sepa qué es process, __dirname, etc.
+
+```json
+  "sourceMap": true,
+```
+Con esto generamos un mapa de fuentes.
+Sirve para que, aunque el código se traduzca, las herramientas (como un debugger) puedan mostrarte dónde ocurrió el error en el archivo TypeScript original y no en el traducido.
+
+```json
+  "declaration": true,
+```
+Le decimos que genere archivos .d.ts.
+Son como diccionarios que explican cómo usar lo que escribimos.
+Muy útil si alguien más quiere usar nuestro código.
+
+```json
+  "declarationMap": true,
+```
+Relaciona esos diccionarios (.d.ts) con los mapas de fuente.
+Así tenemos aún mejor información cuando depuramos.
+
+```json
+  "noUncheckedIndexedAccess": true,
+```
+Es una regla estricta: cada vez que accedamos a un arreglo o a un objeto con índices, TypeScript asumirá que podría ser undefined.
+Es como que el profe siempre diga: “¿Seguro que esa casilla no está vacía?”.
+
+```json
+  "exactOptionalPropertyTypes": true,
+```
+Otra regla estricta: si algo es opcional (?), solo puede ser exactamente opcional.
+Ejemplo: name?: string significa que puede ser un texto o puede no existir, pero no puede ser undefined “por accidente”.
+
+```json
+  "strict": true,
+```
+Este es el modo estricto.
+Es como poner al profe más exigente: te revisa que todo esté bien tipado, sin errores escondidos.
+
+```json
+  "jsx": "react-jsx",
+```
+Esto le dice cómo manejar archivos con JSX (lo que usamos en React).
+“react-jsx” es el formato moderno recomendado por React.
+
+```json
+  "verbatimModuleSyntax": true,
+```
+Significa que TypeScript no cambiará la forma en que escribes import o export.
+Si tú dices import { x } from "./file.js", se quedará así, sin inventar otra cosa.
+
+```json
+  "isolatedModules": true,
+```
+Cada archivo se compila de manera independiente.
+Es como corregir tarea por tarea, en vez de mirar todo el cuaderno al mismo tiempo.
+Esto ayuda cuando usamos herramientas como Babel o esbuild.
+
+```json
+  "noUncheckedSideEffectImports": true,
+```
+Evita que se hagan imports que solo ejecutan código sin usarlos explícitamente.
+Ejemplo malo: 
+```ts 
+import "./setup"; // solo corre cosas, no importa nada 
+```
+Con esta regla, TypeScript dirá: “¡hey, importa algo de verdad o no lo traigas!”.
+
+```json
+  "moduleDetection": "force",
+```
+Le dice a TypeScript que fuerce la detección de módulos en todos los archivos.
+Así no depende de si usas import o export: siempre tratará el archivo como un módulo.
+
+```json
+  "skipLibCheck": true,
+```
+Esto le dice a TypeScript: “no revises todas las librerías” porque eso puede ser muy lento.
+Es como confiar en que los libros de la biblioteca ya están bien escritos y no revisarlos.
+
+```json
+  "allowImportingTsExtensions": true
+```
+Esto permite que importemos archivos con la extensión .ts.
+Ejemeplo:
+```ts
+import { algo } from "./archivo.ts";
+```
+Resumen para novatos:
+
+- outDir: dónde guardar los cuadernos traducidos.
+
+- module y target: cómo hablar (lenguaje moderno).
+
+- lib y types: qué diccionarios usar.
+
+- sourceMap y declaration: mapas y diccionarios extras.
+
+- strict y demás reglas: profe estricto que no deja pasar errores.
+
+- jsx: cómo dibujar React.
+
+- skipLibCheck: confía en los libros de la biblioteca.
+
+```json
+```
