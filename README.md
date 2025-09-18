@@ -304,5 +304,5 @@ Resumen para novatos:
 
 - skipLibCheck: confía en los libros de la biblioteca.
 
-```json
-```
+### Para no hacer este readme más largo, saltar al siguiente
+CLick [Aqui]() Para ir al siquiente.
