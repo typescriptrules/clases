@@ -4,6 +4,16 @@ import cors from 'cors';
 import {router, initRoutes} from "./routes/index.ts";
 import {logMiddleware} from "./middlewares/log.ts";
 import {scheduleEmailJob} from "./services/email.service.ts";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, "..");
+const logsDir = path.join(rootDir, "logs");
+
+if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir);
 
 const port = process.env.PORT || 3001;
 const app = express();
