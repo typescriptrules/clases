@@ -1,0 +1,27 @@
+[
+    {
+        "id": "1",
+        "name": "Cien años de soledad",
+        "ouwner": "Ana",
+        "email": "Ana123@gmail.com"
+    },
+    {
+        "id": "2",
+        "name": "La casa de los espíritus",
+        "ouwner": "Carlos",
+        "email": "carlos123@gmail.com"
+    },
+    {
+        "id": "3",
+        "name": "Ficciones",
+        "ouwner": "Sofía",
+        "email": "sofia123@gmail.com"
+    },
+
+    {
+        "id": "4",
+        "name": "Cien años de soledad",
+        "ouwner": "jose",
+        "email": "willon2266@gmail.com"
+    }
+]
