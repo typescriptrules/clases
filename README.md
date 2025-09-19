@@ -1,5 +1,76 @@
 # Clases sobre Express con Node
 
+## Cómo iniciar Node y TypeScript?
+
+### Verificar o instalar paquete curl para hacer descargas con url
+
+```bash
+sudo apt-get update
+sudo apt install curl
+```
+
+### Instalar NVM usando curl
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+```
+
+### Hacer Check de la instalación
+```bash
+source ~/.bashrc
+```
+cerrar la terminal y abrir una nueva y luego:
+```bash
+nvm -v
+```
+### Instalar Node usando NVM
+```bash
+nvm install <versión>
+```
+Ejemplo:
+```bash
+nvm install 20.19.0
+```
+or
+```bash
+nvm install --lts
+```
+Luego para usarla
+```bash
+nvm use <version>
+```
+
+### Instalar typescript globalmente
+
+La -g en el siguiente comando significa justamente eso, que se descarga de manera global y no sólo para un projecto como los paquetes que instalamos y se ven en el package.json
+```bash
+npm install -g typescript
+```
+
+### Iniciar el proyecto
+
+Luego para iniciar nuestro proyecto nos paramos en la carpeta que deseemos iniciar nuestro trabajo y ejecutamos los siguientes comandos:
+
+```bash
+npm init
+tsc --init
+```
+El primer creará el package.json y el segundo creará el tsconfig.json
+
+### Aclaración paquetes de desarrollo
+Los paquetes como Nodemon y los tipos (@types/node por ejemplo) se instalan como paquetes de desarrollo para ellos ponermos la flag: -D
+ejemplo:
+```bash
+npm install -D @types/node
+```
+
+si descargas un proyecto que ya cuenta con package.json solo tienes que hacer
+
+```bash
+npm i
+```
+que es un comando cortito para ```npm install```
+
 ## ¿Qué es el package.json y qué significa?
 
 Imagina que el package.json es la hoja de instrucciones de tu proyecto. Es como el cartel de un salón de clase que dice:
