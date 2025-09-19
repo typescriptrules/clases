@@ -57,4 +57,4 @@ Es el archivo principal que inicia todo el proyecto y conecta todas las piezas.
 
 ## Donde continuar?
 
-Para leer sobre el archivo [app.ts]() haz click [aquí]()
+Para leer sobre el archivo [app.ts](https://github.com/typescriptrules/clases/blob/clase-6-otra-vez/Express.md) haz click [aquí](https://github.com/typescriptrules/clases/blob/clase-6-otra-vez/Express.md)
