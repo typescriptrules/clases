@@ -1,9 +1,9 @@
 import 'dotenv/config'
 import express from 'express';
 import cors from 'cors';
-import {router, initRoutes} from "./routes/index.ts";
-import {logMiddleware} from "./middlewares/log.ts";
-import {scheduleEmailJob} from "./services/email.service.ts";
+import dataRoute from './routes/data.route.ts';
+import {requestLogger} from './middlewares/logger.middleware.ts';
+import {startCronJobs} from './cron/schedule.ts';
 
 const app = express();
 
@@ -14,12 +14,10 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(logMiddleware);
+app.use(requestLogger);
+app.use(dataRoute);
 
-await initRoutes();
-app.use(router);
-
-scheduleEmailJob();
+startCronJobs();
 
 app.listen(process.env.PORT, () => {
     console.log(`Server started on port http://localhost:${process.env.PORT}!`);

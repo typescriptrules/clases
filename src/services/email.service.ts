@@ -1,52 +1,36 @@
-import fs from "fs";
-import path from "path";
-import cron from "node-cron";
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+import logger from '../utils/logger.ts';
 
 dotenv.config();
 
-const logPath = path.join(process.cwd(), "logs", "logs.json");
-
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: process.env.EMAIL_SERVICE,
     auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
+        pass: process.env.EMAIL_PASS
+    }
 });
 
-async function sendLogsByEmail(): Promise<void> {
-    if (!fs.existsSync(logPath)) return;
-    const logs = fs.readFileSync(logPath, "utf-8");
-    const mailOptions = {
-        from: `"API Logs" <${process.env.EMAIL_USER}>`,
-        to: process.env.EMAIL_TO,
-        subject: "Resumen de logs de la API",
-        text: logs,
-        attachments: [
-            {
-                filename: "logs.json",
-                content: logs,
-            },
-        ],
-    };
+export async function sendWeatherEmail(to: string, subject: string, htmlBody: string, meta: any) {
     try {
-        await transporter.sendMail(mailOptions);
-        console.log("Logs enviados por correo");
-        const archivePath = path.join(process.cwd(), "logs", `logs-${Date.now()}.json`);
-        fs.renameSync(logPath, archivePath);
-        fs.writeFileSync(logPath, "[]");
+        const info = await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to,
+            subject,
+            html: htmlBody
+        });
+
+        logger.info({
+            event: 'email_sent',
+            to,
+            subject,
+            meta
+        });
+
+        return info;
     } catch (err: any) {
-        console.error("Error enviando correo:", err.message);
+        logger.error({event: 'email_error', error: err?.message || err});
+        throw err;
     }
 }
-
-function scheduleEmailJob(): void {
-    cron.schedule("*/5 * * * *", async () => {
-        console.log("Ejecutando cronjob para enviar logs...");
-        await sendLogsByEmail();
-    });
-}
-
-export {sendLogsByEmail, scheduleEmailJob};
