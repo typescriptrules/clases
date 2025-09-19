@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title> CORS </title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    input, textarea { width: 100%; max-width: 600px; padding: 0.6rem; margin-bottom: 1rem; font-family: monospace; }
+    button { margin: 0.3rem; padding: 0.5rem 1rem; cursor: pointer; }
+    pre { margin-top: 1rem; padding: 1rem; background: #333; color: #eee; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>CORS 🚀</h1>
+
+  <label for="url">URL del backend:</label>
+  <input id="url" type="text" value="http://localhost:4005/" />
+  <div>
+    <button id="getBtn">GET</button>
+    <button id="postBtn">POST</button>
+    <button id="putBtn">PUT</button>
+    <button id="deleteBtn">DELETE</button>
+  </div>
+
+  <pre id="output"></pre>
+
+
+  <script src="front.js"></script>
+</body>
+</html>

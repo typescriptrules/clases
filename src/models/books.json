@@ -1,0 +1,32 @@
+[
+  {
+    "id": "2",
+    "author": "Isabel Allende",
+    "name": "La casa de los espíritus",
+    "owner": "Carlos"
+  },
+  {
+    "id": "3",
+    "author": "Jorge Luis Borges",
+    "name": "Ficciones",
+    "owner": "Sofía"
+  },
+  {
+    "id": "9",
+    "author": "George Orwell",
+    "name": "Novela",
+    "owner": "1984"
+  },
+  {
+    "id": "7",
+    "author": "Gabriel Garcia Marquez",
+    "name": "Novela",
+    "owner": "100 años de soledad"
+  },
+  {
+    "id": "4",
+    "author": "George Orwell",
+    "name": "Novela",
+    "owner": "1984"
+  }
+]
