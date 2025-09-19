@@ -77,4 +77,4 @@ app.listen(PORT, () => { console.log(\Servidor corriendo en ${PORT}`) })
 
 ### Para is a la siguiente sección.
 
-Click [Aquí]() para ir al próximo archivo
+Click [Aquí](https://github.com/typescriptrules/clases/blob/clase-6-otra-vez/src/routes/rutas.md) para ir al próximo archivo
