@@ -1,0 +1,86 @@
+/* ==== Reset básico ==== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
+
+/* ==== Estilos generales ==== */
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #eef2f3, #dfe6e9);
+  color: #2d3436;
+}
+
+h1 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  color: #0984e3;
+  text-align: center;
+}
+
+/* ==== Controles ==== */
+label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+input {
+  width: 100%;
+  max-width: 500px;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #b2bec3;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #0984e3;
+  outline: none;
+}
+
+/* ==== Botón ==== */
+button {
+  padding: 0.6rem 1.2rem;
+  background: #0984e3;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+  background: #74b9ff;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* ==== Salida ==== */
+pre {
+  margin-top: 2rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 700px;
+  background: #2d3436;
+  color: #dfe6e9;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
