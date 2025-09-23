@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestor de Gastos</title>
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+  <h1>Gestor de Gastos</h1>
+
+  <div class="dashboard-container">
+    <!-- Izquierda: Lista de Gastos -->
+    <section class="dashboard-left">
+      <h2>Lista de Gastos</h2>
+      <ul id="expenses-list"></ul>
+    </section>
+
+    <!-- Centro: Formulario -->
+    <section class="dashboard-center">
+      <h2>Agregar Gasto</h2>
+      <form id="expense-form">
+        <input type="text" id="description" placeholder="Descripción" required />
+        <input type="number" id="amount" placeholder="Monto" required />
+        <input type="text" id="currency" placeholder="Moneda (COP, USD)" required />
+        <input type="text" id="category" placeholder="Categoría" required />
+        <button type="submit">Agregar</button>
+      </form>
+    </section>
+
+    <!-- Derecha: Dashboard con divisas -->
+    <section class="dashboard-right">
+      <h2>Tasas de Cambio (USD)</h2>
+      <ul id="rates-list"></ul>
+
+      <h2>Conversor</h2>
+      <form id="convert-form">
+        <input type="number" id="convert-amount" placeholder="Monto" required />
+        <input type="text" id="from-currency" placeholder="De (ej: USD)" required />
+        <input type="text" id="to-currency" placeholder="A (ej: COP)" required />
+        <button type="submit">Convertir</button>
+      </form>
+      <p id="convert-result"></p>
+    </section>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
