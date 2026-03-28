@@ -1,0 +1,7 @@
+git fetch upstream = traigo ramas del profe a mi PC.
+
+git branch -r = me muestra ramas remotas (origin/... y upstream/...).
+
+git checkout -b <rama> upstream/<rama> = creo una rama local basada en la del profe.
+
+git push origin <rama> = la envío a mi fork en GitHub.
